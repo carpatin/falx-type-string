@@ -2,11 +2,15 @@
 
 namespace Falx\Type\String\Representation\Type;
 
+use Falx\Type\String\Representation\Type;
+use Falx\Type\String;
+
 /**
  * Character array representation of an UTF-8 string.
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class CharacterArray implements \Countable, \ArrayAccess {
+class CharacterArray implements Type, \Countable, \ArrayAccess
+{
 
     /**
      * The array of UTF-8 characters
@@ -18,7 +22,8 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * CharacterArray constructor
      * @param string $string
      */
-    public function __construct($string) {
+    public function __construct($string)
+    {
         $this->characters = $this->getUtf8Characters($string);
     }
 
@@ -29,7 +34,8 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * @return array
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    private function getUtf8Characters($string) {
+    private function getUtf8Characters($string)
+    {
         $characters = array();
         $current = 0;
         while (isset($string[$current])) {
@@ -37,25 +43,26 @@ class CharacterArray implements \Countable, \ArrayAccess {
             $second = isset($string[$current + 1]) ? $string[$current + 1] : null;
             $third = isset($string[$current + 2]) ? $string[$current + 2] : null;
             $fourth = isset($string[$current + 3]) ? $string[$current + 3] : null;
-            if ($first & "\x80" === "\x00") {
+
+            if (bin2hex($first & "\x80") == bin2hex("\x00")) {
                 // ASCII range character
                 $characters[] = $first;
                 $current ++;
-            } elseif ($first & "\xE0" === "\C0") {
+            } elseif (bin2hex($first & "\xE0") == bin2hex("\xC0")) {
                 // Two codepoints character
-                if ($second !== null && $second & "\xC0" === "\x80") {
+                if ($second !== null && bin2hex($second & "\xC0") == bin2hex("\x80")) {
                     $characters[] = "$first$second";
                 }
                 $current+=2;
-            } elseif ($first & "\xF0" === "\xE0") {
+            } elseif (bin2hex($first & "\xF0") == bin2hex("\xE0")) {
                 // Three codepoints character
-                if ($second !== null && $second & "\xC0" === "\x80" && $third !== null && $third & "\xC0" === "\x80") {
+                if ($second !== null && bin2hex($second & "\xC0") == bin2hex("\x80") && $third !== null && bin2hex($third & "\xC0") == bin2hex("\x80")) {
                     $characters[] = "$first$second$third";
                 }
                 $current+=3;
-            } elseif ($first & "\xF8" === "\xF0") {
+            } elseif (bin2hex($first & "\xF8") == bin2hex("\xF0")) {
                 // Four codepoints character
-                if ($second !== null && $second & "\xC0" === "\x80" && $third !== null && $third & "\xC0" === "\x80" && $fourth !== null && $fourth & "\xC0" === "\x80") {
+                if ($second !== null && bin2hex($second & "\xC0") == bin2hex("\x80") && $third !== null && bin2hex($third & "\xC0") == bin2hex("\x80") && $fourth !== null && bin2hex($fourth & "\xC0") == bin2hex("\x80")) {
                     $characters[] = "$first$second$third$fourth";
                 }
                 $current+=4;
@@ -72,7 +79,8 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * Counts and returns the count of the code points array.
      * @return int
      */
-    public function count() {
+    public function count()
+    {
         return count($this->characters);
     }
 
@@ -85,7 +93,8 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * @param int $offset
      * @return string
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return array_key_exists($offset, $this->characters);
     }
 
@@ -94,7 +103,8 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * @param int $offset
      * @return string
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         return $this->characters[$offset];
     }
 
@@ -103,7 +113,8 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * @param int $offset
      * @param string $value
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
         if (!is_string($value)) {
             throw new Exception('Expected a string value to set');
         }
@@ -114,8 +125,22 @@ class CharacterArray implements \Countable, \ArrayAccess {
      * Offset unset
      * @param int $offset
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         unset($this->characters[$offset]);
+    }
+
+    /*
+     * Implementation of Type interface
+     */
+
+    /**
+     * Returns the String corresponding to this representation
+     * @return String
+     */
+    public function toString()
+    {
+        return new String(implode($this->characters));
     }
 
 }

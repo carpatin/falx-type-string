@@ -1,0 +1,4 @@
+ansible/
+.vagrant/
+Vagrantfile
+public/

@@ -5,11 +5,10 @@ namespace Falx\Type\String\Processing\Plugin;
 use Falx\Type\String;
 
 /**
- * String case utility functions.F
- * 
- * @author Dan Homorodean
+ * Case folding plugin interface
+ * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-interface Casing {
+interface CaseFolding {
 
     function toUppercase(String $string);
 

@@ -13,7 +13,7 @@ class PluginFactory {
      */
     const PLUGIN_LENGTH = 'Length';
     const PLUGIN_COMPARISON = 'Comparison';
-    const PLUGIN_CASING = 'Casing';
+    const PLUGIN_CASEFOLDING = 'CaseFolding';
 
     /**
      * Implementation types
@@ -31,9 +31,9 @@ class PluginFactory {
             self::IMPL_MULTIBYTE,
             self::IMPL_CUSTOM
         ),
-        self::PLUGIN_CASING => array(
+        self::PLUGIN_CASEFOLDING => array(
             self::IMPL_CUSTOM
-        //TODO: add the other impl.
+            //TODO: add the other impl.
         ),
         self::PLUGIN_COMPARISON => array(
             self::IMPL_INTL,
@@ -78,7 +78,8 @@ class PluginFactory {
 
         $usedClass = null;
         foreach ($implementations as $implementation) {
-            $implementationClass = '\Falx\Type\String\Processing\\' . $plugin . '\\' . $implementation;
+            $implementationClass = '\Falx\Type\String\Processing\Plugin\\' . $plugin . '\\' . $implementation;
+            
             if (class_exists($implementationClass) && $this->hasMetDependencies($implementation)) {
                 $usedClass = $implementationClass;
                 break;

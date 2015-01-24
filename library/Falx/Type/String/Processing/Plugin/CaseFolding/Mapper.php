@@ -1,0 +1,88 @@
+<?php
+
+namespace Falx\Type\String\Processing\Plugin\CaseFolding;
+
+/**
+ * Case folding lowercase/uppercase mapper. 
+ * Chain of responsibility applied in this class.
+ * Uses a chain of latin, greek, cyrillic and other characters mappers 
+ * in order to optimize the mapping from lowercase to uppercase and vice versa.
+ * @author Dan Homorodean <dan.homorodean@gmail.com>
+ */
+class Mapper
+{
+
+    /**
+     * Singleton instance
+     * @var Mapper 
+     */
+    private static $instance;
+
+    /**
+     * Singleton getter
+     * @return Mapper
+     */
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * The first mapper in chain
+     * @var Mapper\ChainableMapper
+     */
+    private $top;
+
+    private function __construct()
+    {
+        // Setup chain of mappers
+        $latin = new Mapper\ChainableMapper\LatinLetters();
+        $greek = new Mapper\ChainableMapper\GreekLetters();
+        $cyrillic = new Mapper\ChainableMapper\CyrillicLetters();
+        $other = new Mapper\ChainableMapper\OtherLetters();
+
+        $cyrillic->setNext($other);
+        $greek->setNext($cyrillic);
+        $latin->setNext($greek);
+
+        $this->top = $latin;
+    }
+
+    /**
+     * Attempts to map the character to its lowercase.
+     * @param string $character
+     * @return string
+     */
+    public function lowercase($character)
+    {
+        $this->top->setMode(Mapper\ChainableMapper::MODE_UPPER_TO_LOWER);
+        $lower = $this->top->lookup($character);
+
+        if ($lower === false) {
+            return $character;
+        }
+
+        return $lower;
+    }
+
+    /**
+     * Attempts to map the character to its uppercase.
+     * @param string $character
+     * @return string
+     */
+    public function uppercase($character)
+    {
+        $this->top->setMode(Mapper\ChainableMapper::MODE_LOWER_TO_UPPER);
+        $upper = $this->top->lookup($character);
+
+        if ($upper === false) {
+            return $character;
+        }
+
+        return $upper;
+    }
+
+}

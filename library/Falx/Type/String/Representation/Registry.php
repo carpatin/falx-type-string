@@ -6,7 +6,8 @@ namespace Falx\Type\String\Representation;
  * Strings representations registry
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class Registry {
+class Registry
+{
     /*
      * Supported string representations
      */
@@ -24,7 +25,8 @@ class Registry {
      * Singleton getter
      * @return Registry
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -40,18 +42,20 @@ class Registry {
     /**
      * Class constructor
      */
-    private function __construct() {
+    private function __construct()
+    {
         $this->representationCache = array();
     }
 
     /**
-     * Creates or returns from cache the suitable representation for the given string.
+     * Creates or returns from cache (a clone of) the suitable representation for the given string.
      * @param string $string
      * @param string $type
      * @return mixed
      * @throws \Exception
      */
-    public function getRepresentation($string, $type = self::TYPE_CHARACTER_ARRAY) {
+    public function getRepresentation($string, $type = self::TYPE_CHARACTER_ARRAY)
+    {
 
         if (!$this->hasCache($string, $type)) {
             $namespace = __NAMESPACE__ . '\\' . 'Type';
@@ -65,7 +69,7 @@ class Registry {
             $this->addToCache($string, $representation, $type);
         }
 
-        return $this->getFromCache($string, $type);
+        return clone $this->getFromCache($string, $type);
     }
 
     /**
@@ -74,7 +78,8 @@ class Registry {
      * @param mixed $representation
      * @param string $type
      */
-    private function addToCache($string, $representation, $type) {
+    private function addToCache($string, $representation, $type)
+    {
         if (!isset($this->representationCache[$type])) {
             $this->representationCache[$type] = array();
         }
@@ -87,7 +92,8 @@ class Registry {
      * @param string $type
      * @return boolean
      */
-    private function hasCache($string, $type) {
+    private function hasCache($string, $type)
+    {
         if (!isset($this->representationCache[$type])) {
             return false;
         }
@@ -101,7 +107,8 @@ class Registry {
      * @param string $type
      * @return boolean|mixed
      */
-    private function getFromCache($string, $type) {
+    private function getFromCache($string, $type)
+    {
         if (!isset($this->representationCache[$type])) {
             return false;
         }

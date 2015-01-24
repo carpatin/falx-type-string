@@ -17,6 +17,8 @@ class Custom implements ComparisonInterface {
      * @param String $second
      * @return int One of 1, 0, -1
      * @author Dan Homorodean <dan.homorodean@gmail.com>
+     * 
+     * @todo Refactor: see if logic is correct
      */
     public function compareTo(String $first, String $second) {
         /* @var $firstChars CharacterArray */
@@ -71,7 +73,7 @@ class Custom implements ComparisonInterface {
      */
     public function equalsIgnoringCase(String $first, String $second) {
         /* @var $casingPlugin CasingInterface */
-        $casingPlugin = $this->plugins()->getImplementation(PluginFactory::PLUGIN_CASING, 'Custom');
+        $casingPlugin = $this->plugins()->getImplementation(PluginFactory::PLUGIN_CASEFOLDING, 'Custom');
         $lowercasedFirst = $casingPlugin->toLowercase($first);
         $lowercasedSecond = $casingPlugin->toLowercase($second);
         return $lowercasedFirst->literal() === $lowercasedSecond->literal();
