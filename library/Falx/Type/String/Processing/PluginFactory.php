@@ -5,8 +5,10 @@ namespace Falx\Type\String\Processing;
 /**
  * String processing plugins factory.
  * @author Dan Homorodean <dan.homorodean@gmail.com>
+ * @todo Add a cache of created plugins as an optimization
  */
-class PluginFactory {
+class PluginFactory
+{
 
     /**
      * Plugin types
@@ -33,7 +35,7 @@ class PluginFactory {
         ),
         self::PLUGIN_CASEFOLDING => array(
             self::IMPL_CUSTOM
-            //TODO: add the other impl.
+        //TODO: add the other impl.
         ),
         self::PLUGIN_COMPARISON => array(
             self::IMPL_INTL,
@@ -46,7 +48,8 @@ class PluginFactory {
      * Singleton pattern implementation. 
      */
 
-    private function __construct() {
+    private function __construct()
+    {
         
     }
 
@@ -60,7 +63,8 @@ class PluginFactory {
      * Returns singleton instance
      * @return PluginFactory
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -73,13 +77,14 @@ class PluginFactory {
      * @return \Falx\Type\String\Processing\PluginInterface
      * @author Dan Homorodean <dan.homorodean@gmail.com
      */
-    public function get($plugin) {
+    public function get($plugin)
+    {
         $implementations = $this->getPluginImplementationPreferences($plugin);
 
         $usedClass = null;
         foreach ($implementations as $implementation) {
             $implementationClass = '\Falx\Type\String\Processing\Plugin\\' . $plugin . '\\' . $implementation;
-            
+
             if (class_exists($implementationClass) && $this->hasMetDependencies($implementation)) {
                 $usedClass = $implementationClass;
                 break;
@@ -94,7 +99,8 @@ class PluginFactory {
         return $pluginInstance;
     }
 
-    public function getImplementation($plugin, $implementation) {
+    public function getImplementation($plugin, $implementation)
+    {
         //TODO
     }
 
@@ -105,7 +111,8 @@ class PluginFactory {
      * @throws \Exception
      * @author Dan Homorodean <dan.homorodean@gmail.com
      */
-    private function getPluginImplementationPreferences($plugin) {
+    private function getPluginImplementationPreferences($plugin)
+    {
         if (isset($this->preferences[$plugin])) {
             return $this->preferences[$plugin];
         } else {
@@ -119,7 +126,8 @@ class PluginFactory {
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    private function hasMetDependencies($implementation) {
+    private function hasMetDependencies($implementation)
+    {
         $dependenciesOk = false;
         switch ($implementation) {
             case self::IMPL_MULTIBYTE:

@@ -56,10 +56,17 @@ class Unicode
     {
         $bytes = array_map(function($binary) {
             $decimal = bindec($binary);
-            if($decimal === 0){
+            if ($decimal === 0) {
                 return null;
             }
             $hex = dechex($decimal);
+
+            // Fix odd length HEX representations
+            if (strlen($hex) % 2 == 1) {
+                $hex = '0' . $hex;
+            }
+
+            // Convert HEX representation to corresponding binary form
             $binary = hex2bin($hex);
             return $binary;
         }, explode(' ', $binaryRepresentation));
