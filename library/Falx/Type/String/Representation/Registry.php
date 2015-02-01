@@ -56,20 +56,40 @@ class Registry
      */
     public function getRepresentation($string, $type = self::TYPE_CHARACTER_ARRAY)
     {
-
         if (!$this->hasCache($string, $type)) {
-            $namespace = __NAMESPACE__ . '\\' . 'Type';
-            $representationClass = $namespace . '\\' . $type;
-            if (class_exists($representationClass)) {
-                $representation = new $representationClass($string);
-            } else {
-                throw new \Exception('Unknown representation type ' . $type);
-            }
-
+            $representationClass = $this->getRepresentationClass($type);
+            $representation = new $representationClass($string);
             $this->addToCache($string, $representation, $type);
         }
 
         return clone $this->getFromCache($string, $type);
+    }
+
+    /**
+     * Returns empty representation object.
+     * @param string $type
+     * @return \Falx\Type\String\Representation\representationClass
+     */
+    public function getEmpty($type = self::TYPE_CHARACTER_ARRAY)
+    {
+        $representationClass = $this->getRepresentationClass($type);
+        return new $representationClass();
+    }
+
+    /**
+     * Returns representation class name by representation type.
+     * @param string $type
+     * @return string
+     * @throws \Exception If the class is not loaded/accesible.
+     */
+    private function getRepresentationClass($type = self::TYPE_CHARACTER_ARRAY)
+    {
+        $namespace = __NAMESPACE__ . '\\' . 'Type';
+        $representationClass = $namespace . '\\' . $type;
+        if (!class_exists($representationClass)) {
+            throw new \Exception('Unknown representation type ' . $type);
+        }
+        return $representationClass;
     }
 
     /**

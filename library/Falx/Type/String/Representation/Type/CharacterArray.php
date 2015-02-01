@@ -22,9 +22,11 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * CharacterArray constructor
      * @param string $string
      */
-    public function __construct($string)
+    public function __construct($string = null)
     {
-        $this->characters = $this->getUtf8Characters($string);
+        if ($string !== null) {
+            $this->characters = $this->getUtf8Characters($string);
+        }
     }
 
     /**

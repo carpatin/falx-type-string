@@ -192,9 +192,74 @@ class Custom implements CaseFoldingInterface
         throw new \Exception('Not implemented');
     }
 
+    /**
+     * Transforms a camelCase name into a corresponding under_score name.
+     * It lowers all upper case letters in the process.
+     * This implementation uses basic PHP, no regular expressions involved.
+     * @param String $string
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
     public function camelCaseToUnderscore(String $string)
     {
-        throw new \Exception('Not implemented');
+        $mapper = Mapper::getInstance();
+        /* @var $camelCased CharacterArray */
+        $camelCased = Registry::getInstance()->getRepresentation($string->literal());
+        /* @var $underscored CharacterArray */
+        $underscored = Registry::getInstance()->getEmpty();
+
+        $prevIsUpper = true;
+        $counter = 0;
+        $digits = range(0, 9);
+        for ($i = 0, $length = count($camelCased); $i < $length; $i++) {
+            $current = $camelCased[$i];
+            if ($this->isUppercaseLetter($current)) {
+
+                // Test if the next character is not uppercare (lookahead)
+                $nextIsUpper = true;
+                $nextIsDigit = false;
+                if ($i + 1 < $length) {
+                    $next = $camelCased[$i + 1];
+                    $nextIsUpper = $this->isUppercaseLetter($next);
+                    $nextIsDigit = $this->inArray($next, $digits);
+                }
+
+                // Test:
+                // - if preceding character was not an uppercase or 
+                // add a preceding _ if that's true
+                if (!$prevIsUpper) {
+                    $underscored[$counter++] = '_';
+                }
+
+                //Test:
+                // - if the following is not an uppercase and the preceding was uppercase (last uppercase in a sequence), 
+                // add a preceding _ if that's true
+                if ($prevIsUpper && !$nextIsUpper && !$nextIsDigit) {
+                    $underscored[$counter++] = '_';
+                }
+
+                // Add the character in lowercase
+                $underscored[$counter++] = $mapper->lowercase($current);
+
+                $prevIsUpper = true;
+            } else {
+                $underscored[$counter++] = $current;
+                $prevIsUpper = false;
+            }
+        }
+        return $underscored->toString();
+    }
+
+    /**
+     * Tests if a PHP string contains an uppercase UTF-8 character.
+     * @param string $character
+     * @return string
+     */
+    private function isUppercaseLetter($character)
+    {
+        $mapper = Mapper::getInstance();
+        $lowercased = $mapper->lowercase($character);
+        return strcmp($character, $lowercased) != 0;
     }
 
     /**

@@ -26,12 +26,14 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * Class constructor
      * @param string $string
      */
-    public function __construct($string)
+    public function __construct($string = null)
     {
-        // Get the characters array for the given string
-        $characterArray = Registry::getInstance()->getRepresentation($string);
-        // Load codepoints from given character array
-        $this->codePoints = $this->getUtf8CodePoints($characterArray);
+        if ($string !== null) {
+            // Get the characters array for the given string
+            $characterArray = Registry::getInstance()->getRepresentation($string);
+            // Load codepoints from given character array
+            $this->codePoints = $this->getUtf8CodePoints($characterArray);
+        }
     }
 
     /**

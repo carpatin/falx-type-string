@@ -24,3 +24,14 @@ print $s->uppercaseWords(); //TODO: fix s to uppercase S problem (basically fini
 print "\n";
 print $s->uppercaseWords()->lowercaseWords();
 print "\n";
+
+
+// Camel case to underscore
+
+$camelCasedSimple = new String("URLBasedRemoteCaller");
+print $camelCasedSimple->camelCaseToUnderscore();
+print "\n";
+
+$camelCased = new String("getAmmountVAT24FromUSD");
+print $camelCased->camelCaseToUnderscore();
+print "\n";
