@@ -11,7 +11,6 @@ use Falx\Type\String\Processing\Util\Unicode;
 
 /**
  * Custom case folding plugin
- * @todo Finish implementation
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
 class Custom implements CaseFoldingInterface
@@ -187,9 +186,38 @@ class Custom implements CaseFoldingInterface
         return false;
     }
 
+    /**
+     * Transforms a under_score name into a corresponding camelCase name.
+     * This implementation uses basic PHP, no regular expressions involved.
+     * @param String $string
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
     public function undescoreToCamelCase(String $string)
     {
-        throw new \Exception('Not implemented');
+        $mapper = Mapper::getInstance();
+        /* @var $underscored CharacterArray */
+        $underscored = Registry::getInstance()->getRepresentation($string->literal());
+        /* @var $camelCased CharacterArray */
+        $camelCased = Registry::getInstance()->getEmpty();
+
+        $prevIsUnderscore = false;
+        $counter = 0;
+        for ($i = 0, $length = count($underscored); $i < $length; $i++) {
+            $current = $underscored[$i];
+            if ($current == '_') {
+                $prevIsUnderscore = true;
+            } else {
+                if ($prevIsUnderscore) {
+                    $camelCased[$counter++] = $mapper->uppercase($current);
+                } else {
+                    $camelCased[$counter++] = $mapper->lowercase($current);
+                }
+                $prevIsUnderscore = false;
+            }
+        }
+
+        return $camelCased->toString();
     }
 
     /**

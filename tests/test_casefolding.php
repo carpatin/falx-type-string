@@ -35,3 +35,17 @@ print "\n";
 $camelCased = new String("getAmmountVAT24FromUSD");
 print $camelCased->camelCaseToUnderscore();
 print "\n";
+
+// Underscore to camel case
+
+$underscored = new String("get_the_max_length");
+print $underscored->undescoreToCamelCase();
+print "\n";
+
+$underscored = new String("_get_the_max_length_");
+print $underscored->undescoreToCamelCase();
+print "\n";
+
+$underscored = new String("get__the__max__length");
+print $underscored->undescoreToCamelCase();
+print "\n";
