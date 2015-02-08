@@ -9,14 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Falx\Type\String\Processing;
+namespace Falx\Type\String\Processing\Plugin\Exception;
+
+use Falx\Type\String\Processing\Plugin\Exception;
 
 /**
- * Generic string processing plugin interface
+ * Thrown when a plugin tries to use a fallback plugin implementation of the same 
+ * functionality and no fallback exists.
  * @author Dan Homorodean <dan.homorodean@gmail.com>
- * @todo See if this interface is still needed.
  */
-interface PluginInterface
+class NoFallbackPluginException extends Exception
 {
     // Empty
 }

@@ -1,6 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Falx PHP library.
+ *
+ * (c) Dan Homorodean <dan.homorodean@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Falx\Type\String\Processing;
+
+use Falx\Type\String\Processing\Plugin\Base as PluginBase;
+use Falx\Type\String\Processing\Plugin\Exception as PluginException;
 
 /**
  * String processing plugins factory.
@@ -16,6 +28,7 @@ class PluginFactory
     const PLUGIN_LENGTH = 'Length';
     const PLUGIN_COMPARISON = 'Comparison';
     const PLUGIN_CASEFOLDING = 'CaseFolding';
+    const PLUGIN_EDGING = 'Edging';
 
     /**
      * Implementation types
@@ -23,25 +36,30 @@ class PluginFactory
     const IMPL_CUSTOM = 'Custom';
     const IMPL_MULTIBYTE = 'Multibyte';
     const IMPL_INTL = 'Intl';
+    const IMPL_ICONV = 'Iconv';
 
     /**
      * Implementations preferences configuration
+     * @todo Make this array configurable from outside this class
      * @var array 
      */
     private $preferences = array(
         self::PLUGIN_LENGTH => array(
-            self::IMPL_MULTIBYTE,
-            self::IMPL_CUSTOM
+            self::IMPL_MULTIBYTE, // 1
+            self::IMPL_CUSTOM, // 2 
         ),
         self::PLUGIN_CASEFOLDING => array(
-            self::IMPL_CUSTOM
+            self::IMPL_CUSTOM, // 1
         //TODO: add the other impl.
         ),
         self::PLUGIN_COMPARISON => array(
-            self::IMPL_INTL,
-            self::IMPL_MULTIBYTE,
-            self::IMPL_CUSTOM
+            self::IMPL_INTL, // 1
+            self::IMPL_CUSTOM, // 2
         ),
+        self::PLUGIN_EDGING => array(
+            self::IMPL_CUSTOM, // 1
+        //TODO: add the other impl.
+        )
     );
 
     /*
@@ -50,7 +68,7 @@ class PluginFactory
 
     private function __construct()
     {
-        
+        // Empty
     }
 
     /**
@@ -74,34 +92,45 @@ class PluginFactory
     /**
      * Creates and returns plugin instance.
      * @param string $plugin one of the PLUGIN_* constants
-     * @return \Falx\Type\String\Processing\PluginInterface
-     * @author Dan Homorodean <dan.homorodean@gmail.com
+     * @return PluginBase
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
     public function get($plugin)
     {
-        $implementations = $this->getPluginImplementationPreferences($plugin);
+        $implementationSuffixes = $this->getPluginImplementationPreferences($plugin);
 
-        $usedClass = null;
-        foreach ($implementations as $implementation) {
-            $implementationClass = '\Falx\Type\String\Processing\Plugin\\' . $plugin . '\\' . $implementation;
+        /* @var $top PluginBase */
+        $top = null;
+        /* @var $previous PluginBase */
+        $previous = null;
+        /* @var $current PluginBase */
+        $current = null;
 
-            if (class_exists($implementationClass) && $this->hasMetDependencies($implementation)) {
-                $usedClass = $implementationClass;
-                break;
+
+        // Build the chain of responsibility from plugins instances
+        foreach ($implementationSuffixes as $implementationSuffix) {
+            $implementationClass = '\Falx\Type\String\Processing\Plugin\\' . $plugin . '\\' . $implementationSuffix;
+
+            if (class_exists($implementationClass) && $this->hasMetDependencies($implementationSuffix)) {
+                $previous = $current;
+
+                $current = new $implementationClass();
+                if ($top === null) {
+                    $top = $current;
+                }
+
+                if ($previous !== null) {
+                    $previous->setNext($current);
+                }
             }
         }
 
-        if ($usedClass === null) {
-            throw new \Exception("No plugin implementation is available for $plugin functionality or available implementations have unmet dependencies.");
+        if ($top === null) {
+            throw new PluginException("No plugin implementation is available for $plugin functionality or available implementations have unmet dependencies.");
         }
-
-        $pluginInstance = new $usedClass();
-        return $pluginInstance;
-    }
-
-    public function getImplementation($plugin, $implementation)
-    {
-        //TODO
+var_dump($top);
+        
+        return $top;
     }
 
     /**
@@ -109,14 +138,14 @@ class PluginFactory
      * @param string $plugin
      * @return array
      * @throws \Exception
-     * @author Dan Homorodean <dan.homorodean@gmail.com
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
     private function getPluginImplementationPreferences($plugin)
     {
         if (isset($this->preferences[$plugin])) {
             return $this->preferences[$plugin];
         } else {
-            throw new \Exception('No preferences found for plugin ' . $plugin);
+            throw new PluginException('No preferences found for plugin ' . $plugin);
         }
     }
 
@@ -135,6 +164,9 @@ class PluginFactory
                 break;
             case self::IMPL_INTL:
                 $dependenciesOk = extension_loaded('intl');
+                break;
+            case self::IMPL_ICONV:
+                $dependenciesOk = extension_loaded('iconv');
                 break;
             case self::IMPL_CUSTOM:
                 $dependenciesOk = true;

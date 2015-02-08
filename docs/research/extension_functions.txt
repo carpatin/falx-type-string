@@ -1,0 +1,23 @@
+iconv
+=====
+
+iconv_strlen — Returns the character count of string
+iconv_strpos — Finds position of first occurrence of a needle within a haystack
+iconv_strrpos — Finds the last occurrence of a needle within a haystack
+iconv_substr — Cut out part of a string
+
+mbstring
+========
+mb_convert_case — Perform case folding on a string
+mb_stristr — Finds first occurrence of a string within another, case insensitive
+mb_strlen — Get string length
+mb_strpos — Find position of first occurrence of string in a string
+mb_strrchr — Finds the last occurrence of a character in a string within another
+mb_strrichr — Finds the last occurrence of a character in a string within another, case insensitive
+mb_strripos — Finds position of last occurrence of a string within another, case insensitive
+mb_strrpos — Find position of last occurrence of a string in a string
+mb_strstr — Finds first occurrence of a string within another
+mb_strtolower — Make a string lowercase
+mb_strtoupper — Make a string uppercase
+mb_substr_count — Count the number of substring occurrences
+mb_substr — Get part of string

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Falx PHP library.
+ *
+ * (c) Dan Homorodean <dan.homorodean@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Falx\Type\String\Processing\Plugin\CaseFolding;
 
 /**
@@ -36,6 +45,9 @@ class Mapper
      */
     private $top;
 
+    /**
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
     private function __construct()
     {
         // Setup chain of mappers
@@ -55,6 +67,7 @@ class Mapper
      * Attempts to map the character to its lowercase.
      * @param string $character
      * @return string
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
     public function lowercase($character)
     {
@@ -72,6 +85,7 @@ class Mapper
      * Attempts to map the character to its uppercase.
      * @param string $character
      * @return string
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
     public function uppercase($character)
     {

@@ -1,8 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Falx PHP library.
+ *
+ * (c) Dan Homorodean <dan.homorodean@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Falx\Type\String\Processing\Plugin\CaseFolding;
 
 use Falx\Type\String\Processing\Plugin\CaseFolding as CaseFoldingInterface;
+use Falx\Type\String\Processing\Plugin\Base as BasePlugin;
 use Falx\Type\String;
 use Falx\Type\String\Representation\Registry;
 use Falx\Type\String\Representation\Type\CharacterArray;
@@ -13,7 +23,7 @@ use Falx\Type\String\Processing\Util\Unicode;
  * Custom case folding plugin
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class Custom implements CaseFoldingInterface
+class Custom extends BasePlugin implements CaseFoldingInterface
 {
 
     /**

@@ -1,6 +1,15 @@
 <?php
 
 /*
+ * This file is part of the Falx PHP library.
+ *
+ * (c) Dan Homorodean <dan.homorodean@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+ 
+/*
  * Extracts case folding data into 4 CSV's based on the family of letters
  */
 

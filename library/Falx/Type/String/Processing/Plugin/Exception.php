@@ -9,14 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Falx\Type\String\Processing;
+namespace Falx\Type\String\Processing\Plugin;
 
-/**
- * Generic string processing plugin interface
- * @author Dan Homorodean <dan.homorodean@gmail.com>
- * @todo See if this interface is still needed.
- */
-interface PluginInterface
+class Exception extends \Exception
 {
     // Empty
 }

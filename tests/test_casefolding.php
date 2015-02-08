@@ -3,7 +3,7 @@ include 'config.php';
 
 use Falx\Type\String;
 
-$s = new String('ĂȚșâășțΚϱГ');
+$s = new String("ĂȚșâășțΚϱГ\xE1\xBA\x9E");
 print $s->toLowercase();
 print "\n";
 print $s->toUppercase();
@@ -19,8 +19,14 @@ print "\n";
 print $s->lowercaseFirst(100)->uppercaseFirst(100);
 print "\n";
 
+$s = new String('sS');
+print $s->toLowercase();
+print "\n";
+print $s->toUppercase();
+print "\n";
+
 $s = new String('și ce să-ți dau când nu dețin nimic');
-print $s->uppercaseWords(); //TODO: fix s to uppercase S problem (basically finish all types of mappings)
+print $s->uppercaseWords();
 print "\n";
 print $s->uppercaseWords()->lowercaseWords();
 print "\n";

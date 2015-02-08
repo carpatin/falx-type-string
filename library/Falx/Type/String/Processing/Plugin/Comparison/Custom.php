@@ -1,15 +1,26 @@
 <?php
 
+/*
+ * This file is part of the Falx PHP library.
+ *
+ * (c) Dan Homorodean <dan.homorodean@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Falx\Type\String\Processing\Plugin\Comparison;
 
 use Falx\Type\String;
 use Falx\Type\String\Processing\Plugin\Comparison as ComparisonInterface;
+use Falx\Type\String\Processing\Plugin\Base as BasePlugin;
 use Falx\Type\String\Processing\Plugin\Casing as CasingInterface;
 use Falx\Type\String\Processing\PluginFactory;
 use Falx\Type\String\Representation\Registry;
 use Falx\Type\String\Representation\Type\CharacterArray;
 
-class Custom implements ComparisonInterface {
+class Custom extends BasePlugin implements ComparisonInterface
+{
 
     /**
      * Custom implementation of compare to operation.
@@ -20,7 +31,8 @@ class Custom implements ComparisonInterface {
      * 
      * @todo Refactor: see if logic is correct
      */
-    public function compareTo(String $first, String $second) {
+    public function compareTo(String $first, String $second)
+    {
         /* @var $firstChars CharacterArray */
         $firstChars = Registry::getInstance()->getRepresentation($first->literal());
 
@@ -60,7 +72,8 @@ class Custom implements ComparisonInterface {
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function equals(String $first, String $second) {
+    public function equals(String $first, String $second)
+    {
         return $first->literal() === $second->literal();
     }
 
@@ -71,7 +84,8 @@ class Custom implements ComparisonInterface {
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function equalsIgnoringCase(String $first, String $second) {
+    public function equalsIgnoringCase(String $first, String $second)
+    {
         /* @var $casingPlugin CasingInterface */
         $casingPlugin = $this->plugins()->getImplementation(PluginFactory::PLUGIN_CASEFOLDING, 'Custom');
         $lowercasedFirst = $casingPlugin->toLowercase($first);
@@ -83,7 +97,8 @@ class Custom implements ComparisonInterface {
      * Returns plugin factory
      * @return PluginFactory
      */
-    protected function plugins() {
+    protected function plugins()
+    {
         return PluginFactory::getInstance();
     }
 
