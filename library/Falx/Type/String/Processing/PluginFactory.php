@@ -128,7 +128,6 @@ class PluginFactory
         if ($top === null) {
             throw new PluginException("No plugin implementation is available for $plugin functionality or available implementations have unmet dependencies.");
         }
-var_dump($top);
         
         return $top;
     }
