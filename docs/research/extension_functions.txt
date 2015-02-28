@@ -1,6 +1,5 @@
 iconv
 =====
-
 iconv_strlen — Returns the character count of string
 iconv_strpos — Finds position of first occurrence of a needle within a haystack
 iconv_strrpos — Finds the last occurrence of a needle within a haystack

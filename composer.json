@@ -1,0 +1,12 @@
+{
+    "name": "dan-homorodean/falx-type-string",
+    "description": "PHP String class with native UTF-8 support",
+    "minimum-stability": "dev",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Dan Homorodean",
+            "email": "dan.homorodean@gmail.com"
+        }
+    ]
+}
