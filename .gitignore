@@ -2,3 +2,5 @@ ansible/
 .vagrant/
 Vagrantfile
 public/
+library/Autoloader.php
+
