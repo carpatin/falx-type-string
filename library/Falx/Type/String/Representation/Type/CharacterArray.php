@@ -82,6 +82,14 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
         return $characters;
     }
 
+    /**
+     * Resets integer indices of array.
+     */
+    public function resetIndices()
+    {
+        $this->characters = array_values($this->characters);
+    }
+
     /*
      * Countable implementation
      */

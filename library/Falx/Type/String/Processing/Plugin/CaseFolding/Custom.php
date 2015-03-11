@@ -18,6 +18,7 @@ use Falx\Type\String\Representation\Registry;
 use Falx\Type\String\Representation\Type\CharacterArray;
 use Falx\Type\String\Processing\Plugin\CaseFolding\Mapper;
 use Falx\Type\String\Processing\Util\Unicode;
+use Falx\Type\String\Processing\Util\CharacterClasses;
 
 /**
  * Custom case folding plugin
@@ -150,7 +151,7 @@ class Custom extends BasePlugin implements CaseFoldingInterface
         /* @var $characterArray CharacterArray */
         $characterArray = Registry::getInstance()->getRepresentation($string->literal());
         $mapper = Mapper::getInstance();
-        $dividers = $this->getWordDividers();
+        $dividers = CharacterClasses::getWhitespaceChars();
 
         for ($i = 0, $length = count($characterArray); $i < $length; $i++) {
             $current = $characterArray[$i];
@@ -298,56 +299,6 @@ class Custom extends BasePlugin implements CaseFoldingInterface
         $mapper = Mapper::getInstance();
         $lowercased = $mapper->lowercase($character);
         return strcmp($character, $lowercased) != 0;
-    }
-
-    /**
-     * Local cache of divider characters
-     * @var array
-     */
-    private $wordDividers;
-
-    /**
-     * Returns an array with UTF8 representation strings containing Unicode word dividers
-     * @return array
-     * @author Dan Homorodean <dan.homorodean@gmail.com>
-     */
-    private function getWordDividers()
-    {
-        if ($this->wordDividers === null) {
-
-            $this->wordDividers = [
-                /*
-                 * Whitespace characters
-                 */
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+0009')), // horizontal tab
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+000A')), // line feed
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+000B')), // line tabulation
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+000C')), // form feed
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+000D')), // carriage return
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+0020')), // ASCII space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+0085')), // next line
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+00A0')), // no-break space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+1680')), // ogham space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2000')), // en quad
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2001')), // em quad
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2002')), // en space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2003')), // em space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2004')), // three-per-em space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2005')), // four-per-em space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2006')), // six-per-em space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2007')), // figure space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2008')), // punctuation space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2009')), // thin space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+200A')), // hair space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2028')), // line separator
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+2029')), // paragraph separator
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+202F')), // narrow no-break space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+205F')), // medium mathematical space
-                implode(Unicode::hexCodepointToUTF8CharacterBytes('U+3000')), // ideographic space
-            ];
-        }
-
-        return $this->wordDividers;
     }
 
 }
