@@ -18,6 +18,7 @@ use Falx\Type\String\Processing\Plugin\Casing as CasingInterface;
 use Falx\Type\String\Processing\PluginFactory;
 use Falx\Type\String\Representation\Registry;
 use Falx\Type\String\Representation\Type\CharacterArray;
+use Falx\Type\String\Representation\Type\CodePointArray;
 
 class Custom extends BasePlugin implements ComparisonInterface
 {

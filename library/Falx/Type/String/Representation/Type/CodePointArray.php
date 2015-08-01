@@ -55,12 +55,75 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
     private function getUtf8CodePoints(CharacterArray $characters)
     {
         $codePoints = array();
-        foreach ($characters as $character) {
-            $hexString = bin2hex($character);
-            $codePoint = hexdec($hexString);
+        for ($i = 0, $count = count($characters); $i < $count; $i++) {
+            $character = $characters[$i];
+            switch (strlen($character)) {
+                case 1:
+                    $codePoint = $character;
+                    break;
+                case 2:
+                    $firstBinary = $this->characterToBinaryRepresentation($character[0]);
+                    $secondBinary = $this->characterToBinaryRepresentation($character[1]);
+                    $finalBinary = '00000' . substr($firstBinary, 3) . substr($secondBinary, 2);
+
+                    $firstCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 0, 8));
+                    $secondCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 8));
+                    $codePoint = "{$firstCharacter}{$secondCharacter}";
+                    break;
+
+                case 3:
+                    $firstBinary = $this->characterToBinaryRepresentation($character[0]);
+                    $secondBinary = $this->characterToBinaryRepresentation($character[1]);
+                    $thirdBinary = $this->characterToBinaryRepresentation($character[2]);
+                    $finalBinary = substr($firstBinary, 4) . substr($secondBinary, 2) . substr($thirdBinary, 2);
+
+                    $firstCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 0, 8));
+                    $secondCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 8));
+                    $codePoint = "{$firstCharacter}{$secondCharacter}";
+                    break;
+                case 4:
+                    $firstBinary = $this->characterToBinaryRepresentation($character[0]);
+                    $secondBinary = $this->characterToBinaryRepresentation($character[1]);
+                    $thirdBinary = $this->characterToBinaryRepresentation($character[2]);
+                    $fourthBinary = $this->characterToBinaryRepresentation($character[3]);
+                    $finalBinary = '000' . substr($firstBinary, 5) . substr($secondBinary, 2) . substr($thirdBinary, 2) . substr($fourthBinary, 2);
+
+                    $firstCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 0, 8));
+                    $secondCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 8, 8));
+                    $thirdCharacter = $this->binaryRepresentationToCharacter(substr($finalBinary, 16));
+                    $codePoint = "{$firstCharacter}{$secondCharacter}{$thirdCharacter}";
+                    break;
+            }
+
+
             $codePoints[] = $codePoint;
         }
         return $codePoints;
+    }
+
+    /**
+     * Converts binary string char/byte to binary string representation.
+     * @param string $character
+     * @return string
+     */
+    private function characterToBinaryRepresentation($character)
+    {
+        return decbin(hexdec(bin2hex($character)));
+    }
+
+    /**
+     * Converts binary string representation of a byte to binary string char.
+     * @param string $string
+     * @return string
+     */
+    private function binaryRepresentationToCharacter($string)
+    {
+        $hex = dechex(bindec($string));
+        // Fix odd length HEX representations
+        if (strlen($hex) % 2 == 1) {
+            $hex = '0' . $hex;
+        }
+        return hex2bin($hex);
     }
 
     /*
@@ -129,19 +192,22 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      */
 
     /**
-     * Returns the String corresponding to this representation
-     * @return String
+     * Returns the representation of codepoints in U+ notation
+     * @return string
      */
-    public function toString()
+    public function __toString()
     {
         $string = '';
         foreach ($this->codePoints as $codePoint) {
-            $hexString = dechex($codePoint);
-            $character = hex2bin($hexString);
-            $string.=$character;
+            $string.= 'U+' . str_pad(bin2hex($codePoint), 4, '0', STR_PAD_LEFT);
         }
 
-        return new String($string);
+        return $string;
+    }
+
+    public function toString()
+    {
+        //TODO
     }
 
 }
