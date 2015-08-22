@@ -14,12 +14,31 @@ namespace Falx\Type\String\Processing\Plugin;
 use Falx\Type\String;
 use Falx\Type\String\Processing\PluginInterface;
 
+/**
+ * Lookup plugin interface
+ * @author Dan Homorodean <dan.homorodean@gmail.com>
+ */
 interface Lookup extends PluginInterface
 {
 
+    /**
+     * @param String $subject
+     * @param String $substring
+     * @return int|boolean
+     */
     function substringFirstPosition(String $subject, String $substring);
 
+    /**
+     * @param String $subject
+     * @param String $substring
+     * @return int|boolean
+     */
     function substringLastPosition(String $subject, String $substring);
 
+    /**
+     * @param String $subject
+     * @param String $substring
+     * @return int
+     */
     function substringCount(String $subject, String $substring);
 }

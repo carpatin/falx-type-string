@@ -29,6 +29,7 @@ class PluginFactory
     const PLUGIN_COMPARISON = 'Comparison';
     const PLUGIN_CASEFOLDING = 'CaseFolding';
     const PLUGIN_EDGING = 'Edging';
+    const PLUGIN_LOOKUP = 'Lookup';
 
     /**
      * Implementation types
@@ -49,8 +50,8 @@ class PluginFactory
             self::IMPL_CUSTOM, // 2 
         ),
         self::PLUGIN_CASEFOLDING => array(
-            self::IMPL_CUSTOM, // 1
-        //TODO: add the other impl.
+            self:: IMPL_MULTIBYTE, // 1
+            self::IMPL_CUSTOM, // 2
         ),
         self::PLUGIN_COMPARISON => array(
             self::IMPL_INTL, // 1
@@ -58,7 +59,11 @@ class PluginFactory
         ),
         self::PLUGIN_EDGING => array(
             self::IMPL_CUSTOM, // 1
-        //TODO: add the other impl.
+            //TODO: add the other impl.
+        ),
+        self::PLUGIN_LOOKUP => array(
+            self:: IMPL_MULTIBYTE, // 1
+            //TODO: add the other impl.
         )
     );
 
@@ -128,7 +133,7 @@ class PluginFactory
         if ($top === null) {
             throw new PluginException("No plugin implementation is available for $plugin functionality or available implementations have unmet dependencies.");
         }
-        
+
         return $top;
     }
 

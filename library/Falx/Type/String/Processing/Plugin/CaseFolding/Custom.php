@@ -19,6 +19,7 @@ use Falx\Type\String\Representation\Type\CharacterArray;
 use Falx\Type\String\Processing\Plugin\CaseFolding\Mapper;
 use Falx\Type\String\Processing\Util\Unicode;
 use Falx\Type\String\Processing\Util\CharacterClasses;
+use Falx\Type\String\Processing\Plugin\Exception as PluginException;
 
 /**
  * Custom case folding plugin
@@ -80,8 +81,17 @@ class Custom extends BasePlugin implements CaseFoldingInterface
      */
     public function lowercaseFirst(String $string, $count = 1)
     {
+        if ($count < 1) {
+            throw new PluginException('Invalid count provided. Value too small.');
+        }
+
         /* @var $characterArray CharacterArray */
         $characterArray = Registry::getInstance()->getRepresentation($string->literal());
+
+        if ($count >= count($characterArray)) {
+            throw new PluginException('Invalid count provided. Value too big.');
+        }
+
         $mapper = Mapper::getInstance();
         for ($i = 0, $length = count($characterArray); $i < $length && $i < $count; $i++) {
             $characterArray[$i] = $mapper->lowercase($characterArray[$i]);
@@ -99,8 +109,18 @@ class Custom extends BasePlugin implements CaseFoldingInterface
      */
     public function uppercaseFirst(String $string, $count = 1)
     {
+
+        if ($count < 1) {
+            throw new PluginException('Invalid count provided. Value too small.');
+        }
+
         /* @var $characterArray CharacterArray */
         $characterArray = Registry::getInstance()->getRepresentation($string->literal());
+
+        if ($count >= count($characterArray)) {
+            throw new PluginException('Invalid count provided. Value too big.');
+        }
+
         $mapper = Mapper::getInstance();
         for ($i = 0, $length = count($characterArray); $i < $length && $i < $count; $i++) {
             $characterArray[$i] = $mapper->uppercase($characterArray[$i]);
