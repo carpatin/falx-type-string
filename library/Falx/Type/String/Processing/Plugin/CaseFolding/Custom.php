@@ -17,7 +17,6 @@ use Falx\Type\String;
 use Falx\Type\String\Representation\Registry;
 use Falx\Type\String\Representation\Type\CharacterArray;
 use Falx\Type\String\Processing\Plugin\CaseFolding\Mapper;
-use Falx\Type\String\Processing\Util\Unicode;
 use Falx\Type\String\Processing\Util\CharacterClasses;
 use Falx\Type\String\Processing\Plugin\Exception as PluginException;
 
@@ -73,7 +72,7 @@ class Custom extends BasePlugin implements CaseFoldingInterface
     }
 
     /**
-     * Converts first character (or first $count characters) of String to lowercase.
+     * Converts first character (or first $count characters) of String to lowercase
      * @param String $string
      * @param int $count
      * @return String
@@ -101,7 +100,7 @@ class Custom extends BasePlugin implements CaseFoldingInterface
     }
 
     /**
-     * Converts first character (or first $count characters) of String to uppercase.
+     * Converts first character (or first $count characters) of String to uppercase
      * @param String $string
      * @param int $count
      * @return String
@@ -160,7 +159,7 @@ class Custom extends BasePlugin implements CaseFoldingInterface
 
     /**
      * Applies specified case to words, converting the first letter of each word 
-     * to the specified case.
+     * to the specified case
      * @param String $string
      * @param int $case One of CASE_WORDS_* constants 
      * @return String
@@ -218,8 +217,8 @@ class Custom extends BasePlugin implements CaseFoldingInterface
     }
 
     /**
-     * Transforms a under_score name into a corresponding camelCase name.
-     * This implementation uses basic PHP, no regular expressions involved.
+     * Transforms a under_score name into a corresponding camelCase name 
+     * This implementation uses basic PHP, no regular expressions involved
      * @param String $string
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
@@ -252,9 +251,9 @@ class Custom extends BasePlugin implements CaseFoldingInterface
     }
 
     /**
-     * Transforms a camelCase name into a corresponding under_score name.
-     * It lowers all upper case letters in the process.
-     * This implementation uses basic PHP, no regular expressions involved.
+     * Transforms a camelCase name into a corresponding under_score name 
+     * It lowers all upper case letters in the process 
+     * This implementation uses basic PHP, no regular expressions involved 
      * @param String $string
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
@@ -310,7 +309,7 @@ class Custom extends BasePlugin implements CaseFoldingInterface
     }
 
     /**
-     * Tests if a PHP string contains an uppercase UTF-8 character.
+     * Tests if a PHP string contains an uppercase UTF-8 character
      * @param string $character
      * @return string
      */

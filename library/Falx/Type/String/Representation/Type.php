@@ -15,12 +15,16 @@ namespace Falx\Type\String\Representation;
  * Representation type interface
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-interface Type
-{
+interface Type {
 
     /**
-     * Must be implemented by concrete representation to returns the representation 
+     * Must be implemented by concrete representation to return the representation 
      * as a String instance.
      */
     function toString();
+
+    /**
+     * Must be implemented by concrete representation to return an array with elements representing the characters.
+     */
+    function toArray();
 }

@@ -24,7 +24,7 @@ class Custom extends BasePlugin implements ComparisonInterface
 {
 
     /**
-     * Custom implementation of compare to operation.
+     * Custom implementation of compare to operation
      * @param String $first
      * @param String $second
      * @return int One of 1, 0, -1
@@ -67,7 +67,7 @@ class Custom extends BasePlugin implements ComparisonInterface
     }
 
     /**
-     * Custom implementation for the equals operation.
+     * Custom implementation for the equals operation
      * @param String $first
      * @param String $second
      * @return boolean
@@ -88,7 +88,7 @@ class Custom extends BasePlugin implements ComparisonInterface
     public function equalsIgnoringCase(String $first, String $second)
     {
         /* @var $casingPlugin CasingInterface */
-        $casingPlugin = $this->plugins()->getImplementation(PluginFactory::PLUGIN_CASEFOLDING, 'Custom');
+        $casingPlugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         $lowercasedFirst = $casingPlugin->toLowercase($first);
         $lowercasedSecond = $casingPlugin->toLowercase($second);
         return $lowercasedFirst->literal() === $lowercasedSecond->literal();

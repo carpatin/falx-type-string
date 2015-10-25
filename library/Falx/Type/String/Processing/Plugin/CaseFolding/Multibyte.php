@@ -20,8 +20,7 @@ use Falx\Type\String\Processing\Plugin\Exception as PluginException;
  * Multibyte extension based case folding plugin
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class Multibyte extends BasePlugin implements CaseFoldingInterface
-{
+class Multibyte extends BasePlugin implements CaseFoldingInterface {
 
     /**
      * Converts a String to lowercase
@@ -29,8 +28,7 @@ class Multibyte extends BasePlugin implements CaseFoldingInterface
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function toLowercase(String $string)
-    {
+    public function toLowercase(String $string) {
         $converted = mb_convert_case($string->literal(), MB_CASE_LOWER, 'UTF-8');
         return new String($converted);
     }
@@ -41,38 +39,35 @@ class Multibyte extends BasePlugin implements CaseFoldingInterface
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function toUppercase(String $string)
-    {
+    public function toUppercase(String $string) {
         $converted = mb_convert_case($string->literal(), MB_CASE_UPPER, 'UTF-8');
         return new String($converted);
     }
 
     /**
-     * Converts first character (or first $count characters) of String to lowercase.
+     * Converts first character (or first $count characters) of String to lowercase
      * @param String $string
      * @param int $count
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function lowercaseFirst(String $string, $count = 1)
-    {
+    public function lowercaseFirst(String $string, $count = 1) {
         return $this->changeFirst($string, $count, MB_CASE_LOWER);
     }
 
     /**
-     * Converts first character (or first $count characters) of String to uppercase.
+     * Converts first character (or first $count characters) of String to uppercase
      * @param String $string
      * @param int $count
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function uppercaseFirst(String $string, $count = 1)
-    {
+    public function uppercaseFirst(String $string, $count = 1) {
         return $this->changeFirst($string, $count, MB_CASE_UPPER);
     }
 
     /**
-     * Converts first character (or first $count characters) of String to lowercase or uppercase depending on the mode.
+     * Converts first character (or first $count characters) of String to lowercase or uppercase depending on the mode
      * @param String $string
      * @param type $count
      * @param type $mode
@@ -80,8 +75,7 @@ class Multibyte extends BasePlugin implements CaseFoldingInterface
      * @throws PluginException
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    private function changeFirst(String $string, $count, $mode)
-    {
+    private function changeFirst(String $string, $count, $mode) {
         if ($count < 1) {
             throw new PluginException('Invalid count provided. Value too small.');
         }
@@ -96,25 +90,49 @@ class Multibyte extends BasePlugin implements CaseFoldingInterface
         return new String($firstConverted . $remaining);
     }
 
-    public function lowercaseWords(String $string)
-    {
-        throw new \Exception('Not implemented');
+    /**
+     * Lowercases words
+     * @param String $string
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function lowercaseWords(String $string) {
+        // Fallback to another plugin implementation
+        return $this->getFallback()->lowercaseWords($string);
     }
 
-    public function uppercaseWords(String $string)
-    {
+    /**
+     * Uppercases words
+     * @param String $string
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function uppercaseWords(String $string) {
         $converted = mb_convert_case($string->literal(), MB_CASE_TITLE, 'UTF-8');
         return new String($converted);
     }
 
-    public function camelCaseToUnderscore(String $string)
-    {
-        throw new \Exception('Not implemented');
+    /**
+     * Transforms a camelCase name into a corresponding under_score name 
+     * It lowers all upper case letters in the process
+     * @param String $string
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function camelCaseToUnderscore(String $string) {
+        // Fallback to another plugin implementation
+        return $this->getFallback()->camelCaseToUnderscore($string);
     }
 
-    public function undescoreToCamelCase(String $string)
-    {
-        throw new \Exception('Not implemented');
+    /**
+     * Transforms a under_score name into a corresponding camelCase name
+     * @param String $string
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function undescoreToCamelCase(String $string) {
+        // Fallback to another plugin implementation
+        return $this->getFallback()->undescoreToCamelCase($string);
     }
 
 }

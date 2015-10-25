@@ -19,8 +19,7 @@ use Falx\Type\String\Processing\Plugin\Comparison as ComparisonInterface;
  * Implementation of the comparison plugin interface using INTL.
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class Intl extends BasePlugin implements ComparisonInterface
-{
+class Intl extends BasePlugin implements ComparisonInterface {
 
     /**
      * Uses intl extension Collator class to provide functionality
@@ -29,35 +28,35 @@ class Intl extends BasePlugin implements ComparisonInterface
      * @return int
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function compareTo(String $first, String $second)
-    {
+    public function compareTo(String $first, String $second) {
         $collator = new \Collator(setlocale(LC_COLLATE, 0));
         return $collator->compare($first->literal(), $second->literal());
     }
 
     /**
-     * Falls back to basic PHP function to provide the functionality.
+     * Returns whether the strings are equal or not 
+     * Uses the Collator class to accomplish that
      * @param String $first
      * @param String $second
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function equals(String $first, String $second)
-    {
-        // Fallback to basic PHP
-        return $first->literal() === $second->literal();
+    public function equals(String $first, String $second) {
+        $collator = new \Collator(setlocale(LC_COLLATE, 0));
+        return $collator->compare($first->literal(), $second->literal()) === 0;
     }
 
     /**
-     * Falls back to the next implementation in chain to provide the functionality.
+     * Returns whether the strings are equal or not, ignoring their case 
+     * Falls back to the next implementation in chain to provide the functionality 
      * @param String $first
      * @param String $second
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function equalsIgnoringCase(String $first, String $second)
-    {
+    public function equalsIgnoringCase(String $first, String $second) {
         //Fallback to another plugin implementation
         return $this->getFallback()->equalsIgnoringCase($first, $second);
     }
+
 }

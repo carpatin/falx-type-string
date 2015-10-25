@@ -16,7 +16,7 @@ print $s->lowercaseFirst(5);
 print "\n";
 print $s->lowercaseFirst()->uppercaseFirst();
 print "\n";
-print $s->lowercaseFirst(100)->uppercaseFirst(100);
+print $s->lowercaseFirst(3)->uppercaseFirst(3);
 print "\n";
 
 $s = new String('sS');

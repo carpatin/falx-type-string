@@ -19,8 +19,7 @@ use Falx\Exception\IllegalArgumentException;
  * String class
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class String
-{
+class String {
 
     /**
      * PHP string representation (default used representation)
@@ -34,8 +33,7 @@ class String
      * @throws IllegalArgumentException
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function __construct($string = '')
-    {
+    public function __construct($string = '') {
 
         if (is_string($string)) {
             $this->string = $string;
@@ -50,8 +48,7 @@ class String
      * Creates and returns a copy of the current String instance
      * @return \Falx\Type\String
      */
-    public function copy()
-    {
+    public function copy() {
         $copy = new self();
         $copy->string = $this->string;
         return $copy;
@@ -61,8 +58,7 @@ class String
      * Returns the wrapped string literal
      * @return string
      */
-    public function literal()
-    {
+    public function literal() {
         return $this->string;
     }
 
@@ -70,9 +66,62 @@ class String
      * Implementation of the magic method
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return $this->string;
+    }
+
+    /* ======================== */
+    /* Mixin functions feature  */
+    /* ======================== */
+
+    /**
+     * Static array with registered callables.
+     * This serves as an extension mechanism to the String class that is manageable and transparent. 
+     * @var array
+     */
+    private static $mixinFunctions = array();
+
+    /**
+     * Registers a mixin function.
+     * @param string $name
+     * @param callable $callable
+     * @throws \Exception If the second parameter is not a callable
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public static function registerMixinFunction($name, $callable) {
+        if (!is_callable($callable)) {
+            throw new \Exception('Expected a callable as second argument. Not a callable given.');
+        }
+        self::$mixinFunctions[$name] = $callable;
+    }
+
+    /**
+     * Checks for registered mixin function.
+     * @param string $name
+     * @return boolean
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public static function hasMixinFunction($name) {
+        return isset(self::$mixinFunctions[$name]);
+    }
+
+    /**
+     * Magic call method checks for a mixin function registered with the method name 
+     * called upon the string instance, and forwards call if founds a registered function.
+     * It also passes the $this instance as first argument of call so that the callable has access to 
+     * string instance properties and functions.
+     * @param string $name The name of the method called.
+     * @param array $arguments The array of call arguments.
+     * @return mixed
+     * @throws \Exception
+     */
+    public function __call($name, $arguments) {
+        if (!array_key_exists($name, self::$mixinFunctions)) {
+            throw new \Exception(sprintf('Mixin function %s not found.', $name));
+        }
+        array_unshift($arguments, $this);
+        $result = call_user_func_array(self::$mixinFunctions[$name], $arguments);
+        return $result;
     }
 
     /* ======================== */
@@ -84,8 +133,7 @@ class String
      * @return \Falx\Type\String\Processing\PluginFactory
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    private function plugins()
-    {
+    private function plugins() {
         return PluginFactory::getInstance();
     }
 
@@ -98,8 +146,7 @@ class String
      * @return int
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    function length()
-    {
+    function length() {
         /* @var $plugin Plugin\Length */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_LENGTH);
         return $plugin->length($this);
@@ -115,8 +162,7 @@ class String
      * @return int
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function compareTo(String $another)
-    {
+    public function compareTo(String $another) {
         /* @var $plugin Plugin\Comparison */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_COMPARISON);
         return $plugin->compareTo($this, $another);
@@ -128,8 +174,7 @@ class String
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function equals(String $another)
-    {
+    public function equals(String $another) {
         /* @var $plugin Plugin\Comparison */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_COMPARISON);
         return $plugin->equals($this, $another);
@@ -142,8 +187,7 @@ class String
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function equalsIgnoringCase(String $another)
-    {
+    public function equalsIgnoringCase(String $another) {
         /* @var $plugin Plugin\Comparison */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_COMPARISON);
         return $plugin->equalsIgnoringCase($this, $another);
@@ -158,8 +202,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function toUppercase()
-    {
+    public function toUppercase() {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->toUppercase($this);
@@ -170,8 +213,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function toLowercase()
-    {
+    public function toLowercase() {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->toLowercase($this);
@@ -183,8 +225,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function lowercaseFirst($count = 1)
-    {
+    public function lowercaseFirst($count = 1) {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->lowercaseFirst($this, $count);
@@ -196,8 +237,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function uppercaseFirst($count = 1)
-    {
+    public function uppercaseFirst($count = 1) {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->uppercaseFirst($this, $count);
@@ -208,8 +248,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function lowercaseWords()
-    {
+    public function lowercaseWords() {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->lowercaseWords($this);
@@ -220,8 +259,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function uppercaseWords()
-    {
+    public function uppercaseWords() {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->uppercaseWords($this);
@@ -232,8 +270,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function camelCaseToUnderscore()
-    {
+    public function camelCaseToUnderscore() {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->camelCaseToUnderscore($this);
@@ -244,8 +281,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function undescoreToCamelCase()
-    {
+    public function undescoreToCamelCase() {
         /* @var $plugin Plugin\Casing */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_CASEFOLDING);
         return $plugin->undescoreToCamelCase($this);
@@ -261,8 +297,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function trim($trimChars = false)
-    {
+    public function trim($trimChars = false) {
         /* @var $plugin Plugin\Edging */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_EDGING);
         return $plugin->trim($this, $trimChars);
@@ -274,8 +309,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function leftTrim($trimChars = false)
-    {
+    public function leftTrim($trimChars = false) {
         /* @var $plugin Plugin\Edging */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_EDGING);
         return $plugin->leftTrim($this, $trimChars);
@@ -287,8 +321,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function rightTrim($trimChars = false)
-    {
+    public function rightTrim($trimChars = false) {
         /* @var $plugin Plugin\Edging */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_EDGING);
         return $plugin->rightTrim($this, $trimChars);
@@ -301,8 +334,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function padLeft($length, $padString = ' ')
-    {
+    public function padLeft($length, $padString = ' ') {
         /* @var $plugin Plugin\Edging */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_EDGING);
         return $plugin->padLeft($this, $length, $padString);
@@ -315,8 +347,7 @@ class String
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function padRight($length, $padString = ' ')
-    {
+    public function padRight($length, $padString = ' ') {
         /* @var $plugin Plugin\Edging */
         $plugin = $this->plugins()->get(PluginFactory::PLUGIN_EDGING);
         return $plugin->padRight($this, $length, $padString);
@@ -334,8 +365,7 @@ class String
      * @throws IllegalArgumentException
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function append($another)
-    {
+    public function append($another) {
         if ($another instanceof String) {
             $this->string .= $another->string;
         } elseif (is_string($another)) {
@@ -355,8 +385,7 @@ class String
      * @throws IllegalArgumentException
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function appendMultiple($glue)
-    {
+    public function appendMultiple($glue) {
         // Check for enough parameters
         if (func_num_args() <= 1) {
             return $this;
@@ -385,8 +414,7 @@ class String
      * @throws IllegalArgumentException
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function prepend($another)
-    {
+    public function prepend($another) {
         if ($another instanceof String) {
             $this->string = $another->string . $this->string;
         } elseif (is_string($another)) {
@@ -406,8 +434,7 @@ class String
      * @throws IllegalArgumentException
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function prependMultiple($glue)
-    {
+    public function prependMultiple($glue) {
         // Check for enough parameters
         if (func_num_args() <= 1) {
             return $this;

@@ -22,8 +22,7 @@ use Falx\Type\String;
  * 
  * @todo Refactor this: wrong class name, misunderstood notion
  */
-class CodePointArray implements Type, \Countable, \ArrayAccess
-{
+class CodePointArray implements Type, \Countable, \ArrayAccess {
 
     /**
      * Array of string code points
@@ -35,8 +34,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * Class constructor
      * @param string $string
      */
-    public function __construct($string = null)
-    {
+    public function __construct($string = null) {
         if ($string !== null) {
             // Get the characters array for the given string
             $characterArray = Registry::getInstance()->getRepresentation($string);
@@ -52,8 +50,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @return array An array with decimal code points
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    private function getUtf8CodePoints(CharacterArray $characters)
-    {
+    private function getUtf8CodePoints(CharacterArray $characters) {
         $codePoints = array();
         for ($i = 0, $count = count($characters); $i < $count; $i++) {
             $character = $characters[$i];
@@ -106,8 +103,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @param string $character
      * @return string
      */
-    private function characterToBinaryRepresentation($character)
-    {
+    private function characterToBinaryRepresentation($character) {
         return decbin(hexdec(bin2hex($character)));
     }
 
@@ -116,8 +112,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @param string $string
      * @return string
      */
-    private function binaryRepresentationToCharacter($string)
-    {
+    private function binaryRepresentationToCharacter($string) {
         $hex = dechex(bindec($string));
         // Fix odd length HEX representations
         if (strlen($hex) % 2 == 1) {
@@ -136,8 +131,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @return boolean
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
         return array_key_exists($offset, $this->codePoints);
     }
 
@@ -147,8 +141,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @return int
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
         return $this->codePoints[$offset];
     }
 
@@ -158,8 +151,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @param int $value
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
         $this->codePoints[$offset] = $value;
     }
 
@@ -168,8 +160,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @param int $offset
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
         unset($this->codePoints[$offset]);
     }
 
@@ -182,8 +173,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * @return int
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function count()
-    {
+    public function count() {
         return count($this->codePoints);
     }
 
@@ -195,8 +185,7 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
      * Returns the representation of codepoints in U+ notation
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         $string = '';
         foreach ($this->codePoints as $codePoint) {
             $string.= 'U+' . str_pad(bin2hex($codePoint), 4, '0', STR_PAD_LEFT);
@@ -205,9 +194,17 @@ class CodePointArray implements Type, \Countable, \ArrayAccess
         return $string;
     }
 
-    public function toString()
-    {
+    public function toString() {
         //TODO
+    }
+
+    /**
+     * Returns PHP array with characters code points.
+     * @return array
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function toArray() {
+        return $this->codePoints;
     }
 
 }

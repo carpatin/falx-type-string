@@ -18,8 +18,7 @@ use Falx\Type\String;
  * Character array representation of an UTF-8 string.
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class CharacterArray implements Type, \Countable, \ArrayAccess
-{
+class CharacterArray implements Type, \Countable, \ArrayAccess {
 
     /**
      * The array of UTF-8 characters
@@ -31,8 +30,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * CharacterArray constructor
      * @param string $string
      */
-    public function __construct($string = null)
-    {
+    public function __construct($string = null) {
         if ($string !== null) {
             $this->characters = $this->getUtf8Characters($string);
         }
@@ -45,8 +43,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * @return array
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    private function getUtf8Characters($string)
-    {
+    private function getUtf8Characters($string) {
         $characters = array();
         $current = 0;
         while (isset($string[$current])) {
@@ -85,8 +82,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
     /**
      * Resets integer indices of array.
      */
-    public function resetIndices()
-    {
+    public function resetIndices() {
         $this->characters = array_values($this->characters);
     }
 
@@ -98,8 +94,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * Counts and returns the count of the code points array.
      * @return int
      */
-    public function count()
-    {
+    public function count() {
         return count($this->characters);
     }
 
@@ -112,8 +107,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * @param int $offset
      * @return string
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
         return array_key_exists($offset, $this->characters);
     }
 
@@ -122,8 +116,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * @param int $offset
      * @return string
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
         return $this->characters[$offset];
     }
 
@@ -132,8 +125,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * @param int $offset
      * @param string $value
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
         if (!is_string($value)) {
             throw new Exception('Expected a string value to set');
         }
@@ -144,8 +136,7 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
      * Offset unset
      * @param int $offset
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
         unset($this->characters[$offset]);
     }
 
@@ -156,10 +147,19 @@ class CharacterArray implements Type, \Countable, \ArrayAccess
     /**
      * Returns the String corresponding to this representation
      * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function toString()
-    {
+    public function toString() {
         return new String(implode($this->characters));
+    }
+
+    /**
+     * Returns PHP array of characters.
+     * @return array
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function toArray() {
+        return $this->characters;
     }
 
 }

@@ -22,8 +22,7 @@ use Falx\Type\String\Processing\Util\CharacterClasses;
  * Custom edging plugin
  * @author Dan Homorodean <dan.homorodean@gmail.com>
  */
-class Custom extends PluginBase implements EdgingInterface
-{
+class Custom extends PluginBase implements EdgingInterface {
 
     /**
      * Performs left trim on the string
@@ -32,8 +31,7 @@ class Custom extends PluginBase implements EdgingInterface
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function leftTrim(String $string, $additionalChars = false)
-    {
+    public function leftTrim(String $string, $additionalChars = false) {
         // Get an array with the whitespace characters
         $whitespaceChars = CharacterClasses::getWhitespaceChars();
 
@@ -68,8 +66,7 @@ class Custom extends PluginBase implements EdgingInterface
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function rightTrim(String $string, $additionalChars = false)
-    {
+    public function rightTrim(String $string, $additionalChars = false) {
         // Get an array with the whitespace characters
         $whitespaceChars = CharacterClasses::getWhitespaceChars();
 
@@ -105,8 +102,7 @@ class Custom extends PluginBase implements EdgingInterface
      * @return String
      * @author Dan Homorodean <dan.homorodean@gmail.com>
      */
-    public function trim(String $string, $additionalChars = false)
-    {
+    public function trim(String $string, $additionalChars = false) {
         // Get an array with the whitespace characters
         $whitespaceChars = CharacterClasses::getWhitespaceChars();
 
@@ -145,14 +141,66 @@ class Custom extends PluginBase implements EdgingInterface
         return $chars->toString();
     }
 
-    public function padLeft(String $string, $length, $padString = ' ')
-    {
-        throw new \Exception('Not implemented');
+    /**
+     * Pads a string with given pad string to the left side or the right side.
+     * @param String $string The string to pad
+     * @param int $length
+     * @param string $padString Default is ' '
+     * @param string $side Defaults to 'left'. Other possible value is 'right'
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    private function pad(String $string, $length, $padString = ' ', $side = 'left') {
+        $registry = Registry::getInstance();
+
+        $literal = $string->literal();
+        $chars = $registry->getRepresentation($literal);
+
+        // Test if given string already the required length or larger
+        $count = count($chars);
+        if ($count >= $length) {
+            return $string;
+        }
+
+        $diffChars = $length - $count;
+
+        $padChars = $registry->getRepresentation($padString);
+        $padCount = count($padChars);
+
+        $times = (int) $diffChars / $padCount;
+        $remainder = $diffChars % $padCount;
+
+        $finalString = null;
+        if ($side === 'left') {
+            $finalString = str_repeat($padString, $times) . join('', array_slice($padChars->toArray(), 0, $remainder)) . $literal;
+        } elseif ($side === 'right') {
+            $finalString = $literal . str_repeat($padString, $times) . join('', array_slice($padChars->toArray(), 0, $remainder));
+        }
+        return new String($finalString);
     }
 
-    public function padRight(String $string, $length, $padString = ' ')
-    {
-        throw new \Exception('Not implemented');
+    /**
+     * Pads a string with given pad string to the left side.
+     * @param String $string The string to pad
+     * @param int $length
+     * @param string $padString Default is ' '
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function padLeft(String $string, $length, $padString = ' ') {
+        return $this->pad($string, $length, $padString, 'left');
+    }
+
+    /**
+     * Pads a string with given pad string to the right side.
+     * @param String $string The string to pad
+     * @param int $length
+     * @param string $padString Default is ' '
+     * @return String
+     * @author Dan Homorodean <dan.homorodean@gmail.com>
+     */
+    public function padRight(String $string, $length, $padString = ' ') {
+        return $this->pad($string, $length, $padString, 'right');
     }
 
 }
